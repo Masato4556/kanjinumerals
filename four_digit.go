@@ -12,11 +12,16 @@ type FourDigitKanji struct {
 	V []string // 4桁の数値
 	E string   // 10の冪乗
 }
+type FourDigitKanjis []FourDigitKanji
+type FourDigitNumber struct {
+	V int // 4桁の数値
+	E int // 10の冪乗
+}
+type FourDigitNumbers []FourDigitNumber
 
 func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 	n = FourDigitNumber{V: k.numberV(), E: 0}
 	if e, ok := LargeNumeralSymbols[k.E]; ok {
-		// TODO: Vの値を計算する
 		n.E = e
 	}
 	return
@@ -47,7 +52,9 @@ func (k FourDigitKanji) numberV() (nv int) {
 	return nv
 }
 
-type FourDigitNumber struct {
-	V int // 4桁の数値
-	E int // 10の冪乗
+func (ks FourDigitKanjis) ToFourDigitNumbers() (ns FourDigitNumbers) {
+	for _, k := range ks {
+		ns = append(ns, k.ToFourDigitNumber())
+	}
+	return
 }

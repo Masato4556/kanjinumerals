@@ -29,8 +29,8 @@ func splitToFourDigit(kanjiNumeralSymbols []string) (fourDigitKanji []FourDigitK
 
 func KanjiToInt(s string) int {
 	kanjiNumeralSymbols := splitNumeralSymbols(s)
-	fourDigitKanji := splitToFourDigit(kanjiNumeralSymbols)
-	log.Printf("%v", fourDigitKanji)
+	fourDigitKanjis := splitToFourDigit(kanjiNumeralSymbols)
+	log.Printf("%v", fourDigitKanjis)
 	return 0
 }
 

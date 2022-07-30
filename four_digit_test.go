@@ -85,3 +85,34 @@ func TestFourDigitKanji_numberV(t *testing.T) {
 		})
 	}
 }
+
+func TestFourDigitKanjis_ToFourDigitNumbers(t *testing.T) {
+	tests := []struct {
+		name   string
+		ks     FourDigitKanjis
+		wantNs FourDigitNumbers
+	}{
+		{
+			name: "",
+			ks: FourDigitKanjis{
+				{V: []string{"十", "二"}, E: "兆"},
+				{V: []string{"百", "二"}, E: "億"},
+				{V: []string{"二", "千", "九", "百", "五", "十", "七"}, E: "万"},
+				{V: []string{"六", "千", "五", "十"}, E: ""},
+			},
+			wantNs: FourDigitNumbers{
+				{V: 12, E: 12},
+				{V: 102, E: 8},
+				{V: 2957, E: 4},
+				{V: 6050, E: 0},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotNs := tt.ks.ToFourDigitNumbers(); !reflect.DeepEqual(gotNs, tt.wantNs) {
+				t.Errorf("FourDigitKanjis.ToFourDigitNumbers() = %v, want %v", gotNs, tt.wantNs)
+			}
+		})
+	}
+}
