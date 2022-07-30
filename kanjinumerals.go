@@ -1,7 +1,6 @@
 package kanjinumerals
 
 import (
-	"log"
 	"strings"
 )
 
@@ -11,7 +10,7 @@ func splitNumeralSymbols(s string) []string {
 }
 
 // splitToFourDigit 漢数字を4桁ごとに分ける
-func splitToFourDigit(kanjiNumeralSymbols []string) (fourDigitKanji []FourDigitKanji) {
+func splitToFourDigit(kanjiNumeralSymbols []string) (fourDigitKanji FourDigitKanjis) {
 	stuck := []string{}
 	for _, v := range kanjiNumeralSymbols {
 		if _, ok := LargeNumeralSymbols[v]; ok {
@@ -30,8 +29,8 @@ func splitToFourDigit(kanjiNumeralSymbols []string) (fourDigitKanji []FourDigitK
 func KanjiToInt(s string) int {
 	kanjiNumeralSymbols := splitNumeralSymbols(s)
 	fourDigitKanjis := splitToFourDigit(kanjiNumeralSymbols)
-	log.Printf("%v", fourDigitKanjis)
-	return 0
+	fourDigitNumbers := fourDigitKanjis.ToFourDigitNumbers()
+	return fourDigitNumbers.ToInt()
 }
 
 func IntToKanji(number int) string {

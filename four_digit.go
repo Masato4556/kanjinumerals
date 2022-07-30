@@ -58,3 +58,11 @@ func (ks FourDigitKanjis) ToFourDigitNumbers() (ns FourDigitNumbers) {
 	}
 	return
 }
+
+func (ns FourDigitNumbers) ToInt() int {
+	number := 0
+	for _, n := range ns {
+		number += n.V * int(math.Pow10(n.E))
+	}
+	return number
+}

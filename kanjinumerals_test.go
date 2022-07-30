@@ -16,8 +16,8 @@ func TestKanjiToInt(t *testing.T) {
 		want int
 	}{
 		{name: "千二百三十四", args: args{s: "千二百三十四"}, want: 1234},
-		{name: "五〇六〇七八九", args: args{s: "五〇六〇七八九"}, want: 5060789},
 		{name: "十二兆三千四百二億三千四百五十万三千四百五十六", args: args{s: "十二兆三千四百二億三千四百五十万三千四百五十六"}, want: 12340234503456},
+		{name: "五〇六〇七八九", args: args{s: "五〇六〇七八九"}, want: 5060789}, // TODO：このケースも通るようにする
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

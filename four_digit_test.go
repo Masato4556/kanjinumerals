@@ -116,3 +116,29 @@ func TestFourDigitKanjis_ToFourDigitNumbers(t *testing.T) {
 		})
 	}
 }
+
+func TestFourDigitNumbers_ToInt(t *testing.T) {
+	tests := []struct {
+		name string
+		ns   FourDigitNumbers
+		want int
+	}{
+		{
+			name: "",
+			ns: FourDigitNumbers{
+				{V: 12, E: 12},
+				{V: 102, E: 8},
+				{V: 2957, E: 4},
+				{V: 6050, E: 0},
+			},
+			want: 12010229576050,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ns.ToInt(); got != tt.want {
+				t.Errorf("FourDigitNumbers.ToInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
