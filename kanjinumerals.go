@@ -13,7 +13,7 @@ func splitNumeralSymbols(s string) []string {
 func splitToFourDigit(kanjiNumeralSymbols []string) (fourDigitKanji FourDigitKanjis) {
 	stuck := []string{}
 	for _, v := range kanjiNumeralSymbols {
-		if _, ok := LargeNumeralSymbols[v]; ok {
+		if _, ok := LargePowerNumeralSymbols[v]; ok {
 			fourDigitKanji = append(fourDigitKanji, FourDigitKanji{V: stuck, E: v})
 			stuck = []string{}
 		} else {

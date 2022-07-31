@@ -58,7 +58,7 @@ func Test_splitToFourDigit(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []FourDigitKanji
+		want FourDigitKanjis
 	}{
 		{
 			name: "十二兆三千四百二億三千四百五十万三千四百五十六",
@@ -70,7 +70,7 @@ func Test_splitToFourDigit(t *testing.T) {
 					"三", "千", "四", "百", "五", "十", "六",
 				},
 			},
-			want: []FourDigitKanji{
+			want: FourDigitKanjis{
 				{V: []string{"十", "二"}, E: "兆"},
 				{V: []string{"三", "千", "四", "百", "二"}, E: "億"},
 				{V: []string{"三", "千", "四", "百", "五", "十"}, E: "万"},
@@ -81,7 +81,7 @@ func Test_splitToFourDigit(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := splitToFourDigit(tt.args.kanjiNumeral); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("splitToFourDigit() = %v, want %v", got, tt.want)
+				t.Errorf("splitToFourDigit() = %#v, want %#v", got, tt.want)
 			}
 		})
 	}
