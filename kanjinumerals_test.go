@@ -51,9 +51,9 @@ func TestIntToKanji(t *testing.T) {
 	}
 }
 
-func Test_splitToFourDigit(t *testing.T) {
+func Test_splitToFourDigitKanjis(t *testing.T) {
 	type args struct {
-		kanjiNumeral []string
+		kanjiNumeral string
 	}
 	tests := []struct {
 		name string
@@ -62,14 +62,7 @@ func Test_splitToFourDigit(t *testing.T) {
 	}{
 		{
 			name: "十二兆三千四百二億三千四百五十万三千四百五十六",
-			args: args{
-				kanjiNumeral: []string{
-					"十", "二", "兆",
-					"三", "千", "四", "百", "二", "億",
-					"三", "千", "四", "百", "五", "十", "万",
-					"三", "千", "四", "百", "五", "十", "六",
-				},
-			},
+			args: args{kanjiNumeral: "十二兆三千四百二億三千四百五十万三千四百五十六"},
 			want: FourDigitKanjis{
 				{V: []string{"十", "二"}, E: "兆"},
 				{V: []string{"三", "千", "四", "百", "二"}, E: "億"},
@@ -80,8 +73,37 @@ func Test_splitToFourDigit(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := splitToFourDigit(tt.args.kanjiNumeral); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("splitToFourDigit() = %#v, want %#v", got, tt.want)
+			if got := splitToFourDigitKanjis(tt.args.kanjiNumeral); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("splitToFourDigitKanjis() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_splitToFourDigitNumbers(t *testing.T) {
+	type args struct {
+		arabicNumerals int
+	}
+	tests := []struct {
+		name                 string
+		args                 args
+		wantFourDigitNumbers FourDigitNumbers
+	}{
+		{name: "123", args: args{arabicNumerals: 123}, wantFourDigitNumbers: FourDigitNumbers{{V: 123, E: 0}}},
+		{
+			name: "90347389462590", args: args{arabicNumerals: 90347389462590},
+			wantFourDigitNumbers: FourDigitNumbers{
+				{V: 2590, E: 0},
+				{V: 8946, E: 4},
+				{V: 3473, E: 8},
+				{V: 90, E: 12},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotFourDigitNumbers := splitToFourDigitNumbers(tt.args.arabicNumerals); !reflect.DeepEqual(gotFourDigitNumbers, tt.wantFourDigitNumbers) {
+				t.Errorf("splitToFourDigitNumbers() = %v, want %v", gotFourDigitNumbers, tt.wantFourDigitNumbers)
 			}
 		})
 	}
