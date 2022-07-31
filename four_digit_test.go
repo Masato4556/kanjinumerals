@@ -142,3 +142,82 @@ func TestFourDigitNumbers_ToInt(t *testing.T) {
 		})
 	}
 }
+
+func TestFourDigitKanji_IncludeSmallPowerNumeralSymbols(t *testing.T) {
+	type fields struct {
+		V []string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   bool
+	}{
+		{name: "一", fields: fields{V: []string{"一"}}, want: false},
+		{name: "十", fields: fields{V: []string{"十"}}, want: true},
+		{name: "二百五", fields: fields{V: []string{"二", "百", "五"}}, want: true},
+		{name: "二〇五", fields: fields{V: []string{"二", "〇", "五"}}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := FourDigitKanji{
+				V: tt.fields.V,
+			}
+			if got := k.IncludeSmallPowerNumeralSymbols(); got != tt.want {
+				t.Errorf("FourDigitKanji.IncludeSmallPowerNumeralSymbols() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFourDigitKanji_vToNumberWithPowers(t *testing.T) {
+	type fields struct {
+		V []string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		wantNv int
+	}{
+		{name: "一", fields: fields{V: []string{"一"}}, wantNv: 1},
+		{name: "十", fields: fields{V: []string{"十"}}, wantNv: 10},
+		{name: "二百五", fields: fields{V: []string{"二", "百", "五"}}, wantNv: 205},
+		{name: "三千六百十五", fields: fields{V: []string{"三", "千", "六", "百", "十", "五"}}, wantNv: 3615},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := FourDigitKanji{
+				V: tt.fields.V,
+			}
+			if gotNv := k.vToNumberWithPowers(); gotNv != tt.wantNv {
+				t.Errorf("FourDigitKanji.vToNumberWithPowers() = %v, want %v", gotNv, tt.wantNv)
+			}
+		})
+	}
+}
+
+func TestFourDigitKanji_vToNumberWithoutPowers(t *testing.T) {
+	type fields struct {
+		V []string
+		E string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		wantNv int
+	}{
+		{name: "二〇五", fields: fields{V: []string{"二", "〇", "五"}}, wantNv: 205},
+		{name: "三五六七", fields: fields{V: []string{"三", "五", "六", "七"}}, wantNv: 3567},
+		{name: "一二三四五", fields: fields{V: []string{"一", "二", "三", "四", "五"}}, wantNv: 12345},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			k := FourDigitKanji{
+				V: tt.fields.V,
+				E: tt.fields.E,
+			}
+			if gotNv := k.vToNumberWithoutPowers(); gotNv != tt.wantNv {
+				t.Errorf("FourDigitKanji.vToNumberWithoutPowers() = %v, want %v", gotNv, tt.wantNv)
+			}
+		})
+	}
+}

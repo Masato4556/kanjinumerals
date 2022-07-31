@@ -27,12 +27,29 @@ func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 	return
 }
 
+func (k FourDigitKanji) IncludeSmallPowerNumeralSymbols() bool {
+	for symbol, _ := range SmallPowerNumeralSymbols {
+		if contains(k.V, symbol) {
+			return true
+		}
+	}
+	return false
+}
+
 func (k FourDigitKanji) numberV() (nv int) {
+	if k.IncludeSmallPowerNumeralSymbols() {
+		return k.vToNumberWithPowers()
+	}
+
+	return k.vToNumberWithoutPowers()
+}
+
+func (k FourDigitKanji) vToNumberWithPowers() (nv int) {
 	temp := 0
 	digits := []int{}
-	for i, v := range k.V {
+	for _, v := range k.V {
 		if mns, ok := SmallPowerNumeralSymbols[v]; ok {
-			if i == 0 {
+			if temp == 0 {
 				temp = 1
 			}
 			temp *= int(math.Pow10(mns))
@@ -48,6 +65,18 @@ func (k FourDigitKanji) numberV() (nv int) {
 	}
 	for _, v := range digits {
 		nv += v
+	}
+	return nv
+}
+
+func (k FourDigitKanji) vToNumberWithoutPowers() (nv int) {
+	for i, v := range k.V {
+		if i > 0 {
+			nv *= 10
+		}
+		if sns, ok := ArabicNumeralSymbols[v]; ok {
+			nv += sns
+		}
 	}
 	return nv
 }
