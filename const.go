@@ -21,3 +21,7 @@ func findArabicNumeralKanji(n int) string {
 	}
 	return ""
 }
+
+func getKanjiSymbols() []string {
+	return keys(merge(LargePowerNumeralSymbols, SmallPowerNumeralSymbols, ArabicNumeralSymbols))
+}

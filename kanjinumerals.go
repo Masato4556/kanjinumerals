@@ -1,8 +1,35 @@
 package kanjinumerals
 
 import (
+	"errors"
 	"strings"
 )
+
+func KanjiToInt(s string) (int, error) {
+	kanjiNumeralSymbols := splitNumeralSymbols(s)
+	if err := validateKanjis(kanjiNumeralSymbols); err != nil {
+		return 0, err
+	}
+	fourDigitKanjis := splitToFourDigitKanjis(kanjiNumeralSymbols)
+	fourDigitNumbers := fourDigitKanjis.ToFourDigitNumbers()
+	return fourDigitNumbers.ToInt(), nil
+}
+
+func IntToKanji(number int) string {
+	fourDigitNumbers := splitToFourDigitNumbers(number)
+	fourDigitKanjis := fourDigitNumbers.ToFourDigitKanjis()
+	return fourDigitKanjis.ToString()
+}
+
+func validateKanjis(kanjis []string) error {
+	kanjiSymbols := getKanjiSymbols()
+	for _, kanji := range kanjis {
+		if !contains(kanjiSymbols, kanji) {
+			return errors.New("一〜九、十百千、万億兆　以外の漢字が含まれています。")
+		}
+	}
+	return nil
+}
 
 // splitNumeralSymbols 数詞で分割
 func splitNumeralSymbols(s string) []string {
@@ -10,8 +37,7 @@ func splitNumeralSymbols(s string) []string {
 }
 
 // splitToFourDigitKanjis 漢数字を4桁ごとに分ける
-func splitToFourDigitKanjis(kanjiNumerals string) (fourDigitKanjis FourDigitKanjis) {
-	kanjiNumeralSymbols := splitNumeralSymbols(kanjiNumerals)
+func splitToFourDigitKanjis(kanjiNumeralSymbols []string) (fourDigitKanjis FourDigitKanjis) {
 	stuck := []string{}
 	for _, v := range kanjiNumeralSymbols {
 		if _, ok := LargePowerNumeralSymbols[v]; ok {
@@ -25,19 +51,6 @@ func splitToFourDigitKanjis(kanjiNumerals string) (fourDigitKanjis FourDigitKanj
 		fourDigitKanjis = append(fourDigitKanjis, FourDigitKanji{V: stuck, E: ""})
 	}
 	return fourDigitKanjis
-}
-
-func KanjiToInt(s string) int {
-	fourDigitKanjis := splitToFourDigitKanjis(s)
-	fourDigitNumbers := fourDigitKanjis.ToFourDigitNumbers()
-	return fourDigitNumbers.ToInt()
-}
-
-func IntToKanji(number int) string {
-	// TODO
-	fourDigitNumbers := splitToFourDigitNumbers(number)
-	fourDigitKanjis := fourDigitNumbers.ToFourDigitKanjis()
-	return fourDigitKanjis.ToString()
 }
 
 // splitToFourDigitNumbers 数値を4桁ごとに分ける

@@ -11,6 +11,7 @@ type FourDigitKanji struct {
 }
 type FourDigitKanjis []FourDigitKanji
 
+// FourDigitNumberに変換
 func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 	n = FourDigitNumber{V: k.numberV(), E: 0}
 	if e, ok := LargePowerNumeralSymbols[k.E]; ok {
@@ -19,6 +20,7 @@ func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 	return
 }
 
+// 万億兆などの漢数字が含まれるか
 func (k FourDigitKanji) IncludeSmallPowerNumeralSymbols() bool {
 	for symbol, _ := range SmallPowerNumeralSymbols {
 		if contains(k.V, symbol) {
@@ -36,6 +38,7 @@ func (k FourDigitKanji) numberV() (nv int) {
 	return k.vToNumberWithoutPowers()
 }
 
+// TODO: リファクタ
 func (k FourDigitKanji) vToNumberWithPowers() (nv int) {
 	temp := 0
 	digits := []int{}
