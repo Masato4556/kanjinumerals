@@ -35,7 +35,9 @@ func KanjiToInt(s string) int {
 
 func IntToKanji(number int) string {
 	// TODO
-	return ""
+	fourDigitNumbers := splitToFourDigitNumbers(number)
+	fourDigitKanjis := fourDigitNumbers.ToFourDigitKanjis()
+	return fourDigitKanjis.ToString()
 }
 
 // splitToFourDigitNumbers 数値を4桁ごとに分ける

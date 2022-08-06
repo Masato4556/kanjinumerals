@@ -39,7 +39,6 @@ func TestIntToKanji(t *testing.T) {
 		want string
 	}{
 		{name: "1234", args: args{number: 1234}, want: "千二百三十四"},
-		{name: "5060789", args: args{number: 5060789}, want: "五〇六〇七八九"},
 		{name: "12340234503456", args: args{number: 12340234503456}, want: "十二兆三千四百二億三千四百五十万三千四百五十六"},
 	}
 	for _, tt := range tests {
