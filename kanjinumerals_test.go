@@ -35,21 +35,26 @@ func TestKanjiToInt(t *testing.T) {
 }
 
 func TestIntToKanji(t *testing.T) {
-	t.Parallel()
 	type args struct {
 		number int
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
-		{name: "1234", args: args{number: 1234}, want: "千二百三十四"},
-		{name: "12340234503456", args: args{number: 12340234503456}, want: "十二兆三千四百二億三千四百五十万三千四百五十六"},
+		{name: "1234", args: args{number: 1234}, want: "千二百三十四", wantErr: false},
+		{name: "12340234503456", args: args{number: 12340234503456}, want: "十二兆三千四百二億三千四百五十万三千四百五十六", wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IntToKanji(tt.args.number); got != tt.want {
+			got, err := IntToKanji(tt.args.number)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("IntToKanji() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
 				t.Errorf("IntToKanji() = %v, want %v", got, tt.want)
 			}
 		})

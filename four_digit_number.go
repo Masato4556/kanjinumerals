@@ -10,6 +10,23 @@ type FourDigitNumber struct {
 }
 type FourDigitNumbers []FourDigitNumber
 
+// splitToFourDigitNumbers 数値を4桁ごとに分ける
+func splitToFourDigitNumbers(arabicNumerals int) (fourDigitNumbers FourDigitNumbers) {
+	e := 0
+	for arabicNumerals > 0 {
+		fourDigitNumbers = append(
+			fourDigitNumbers,
+			FourDigitNumber{
+				V: arabicNumerals % 10000,
+				E: e,
+			},
+		)
+		arabicNumerals /= 10000
+		e += 4
+	}
+	return
+}
+
 func (n FourDigitNumber) ToFourDigitKanji() (fourDigitKanji FourDigitKanji) {
 	return FourDigitKanji{V: n.kanjiV(), E: n.kanjiE()}
 }

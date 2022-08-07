@@ -11,6 +11,23 @@ type FourDigitKanji struct {
 }
 type FourDigitKanjis []FourDigitKanji
 
+// splitToFourDigitKanjis 漢数字を4桁ごとに分ける
+func splitToFourDigitKanjis(kanjiNumeralSymbols []string) (fourDigitKanjis FourDigitKanjis) {
+	stuck := []string{}
+	for _, v := range kanjiNumeralSymbols {
+		if _, ok := LargePowerNumeralSymbols[v]; ok {
+			fourDigitKanjis = append(fourDigitKanjis, FourDigitKanji{V: stuck, E: v})
+			stuck = []string{}
+		} else {
+			stuck = append(stuck, v)
+		}
+	}
+	if len(stuck) > 0 {
+		fourDigitKanjis = append(fourDigitKanjis, FourDigitKanji{V: stuck, E: ""})
+	}
+	return fourDigitKanjis
+}
+
 // FourDigitNumberに変換
 func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 	n = FourDigitNumber{V: k.numberV(), E: 0}
