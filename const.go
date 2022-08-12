@@ -1,10 +1,10 @@
 package kanjinumerals
 
-var LargePowerNumeralSymbols = map[string]int{"万": 4, "億": 8, "兆": 12}
-var SmallPowerNumeralSymbols = map[string]int{"十": 1, "百": 2, "千": 3}
-var ArabicNumeralSymbols = map[string]int{"〇": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
+var LargePowerNumeralSymbols = map[string]int64{"万": 4, "億": 8, "兆": 12}
+var SmallPowerNumeralSymbols = map[string]int64{"十": 1, "百": 2, "千": 3}
+var ArabicNumeralSymbols = map[string]int64{"〇": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
 
-func findSmallPowerNumeralKanji(n int) string {
+func findSmallPowerNumeralKanji(n int64) string {
 	for k, v := range SmallPowerNumeralSymbols {
 		if v == n {
 			return k
@@ -13,7 +13,7 @@ func findSmallPowerNumeralKanji(n int) string {
 	return ""
 }
 
-func findArabicNumeralKanji(n int) string {
+func findArabicNumeralKanji(n int64) string {
 	for k, v := range ArabicNumeralSymbols {
 		if v == n {
 			return k

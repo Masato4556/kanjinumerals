@@ -1,7 +1,7 @@
 package kanjinumerals
 
 import (
-	"math"
+	"math/big"
 	"strings"
 )
 
@@ -30,9 +30,9 @@ func splitToFourDigitKanjis(kanjiNumeralSymbols []string) (fourDigitKanjis FourD
 
 // FourDigitNumberに変換
 func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
-	n = FourDigitNumber{V: k.numberV(), E: 0}
+	n = FourDigitNumber{V: k.numberV(), E: big.NewInt(0)}
 	if e, ok := LargePowerNumeralSymbols[k.E]; ok {
-		n.E = e
+		n.E = big.NewInt(e)
 	}
 	return
 }
@@ -47,7 +47,7 @@ func (k FourDigitKanji) IncludeSmallPowerNumeralSymbols() bool {
 	return false
 }
 
-func (k FourDigitKanji) numberV() (nv int) {
+func (k FourDigitKanji) numberV() (nv *big.Int) {
 	if k.IncludeSmallPowerNumeralSymbols() {
 		return k.vToNumberWithPowers()
 	}
@@ -56,38 +56,40 @@ func (k FourDigitKanji) numberV() (nv int) {
 }
 
 // TODO: リファクタ
-func (k FourDigitKanji) vToNumberWithPowers() (nv int) {
-	temp := 0
-	digits := []int{}
+func (k FourDigitKanji) vToNumberWithPowers() *big.Int {
+	temp := big.NewInt(0)
+	digits := []*big.Int{}
+	nv := big.NewInt(0)
 	for _, v := range k.V {
 		if mns, ok := SmallPowerNumeralSymbols[v]; ok {
-			if temp == 0 {
-				temp = 1
+			if temp.Cmp(big.NewInt(0)) == 0 {
+				temp.Set(big.NewInt(1))
 			}
-			temp *= int(math.Pow10(mns))
-			digits = append(digits, temp)
-			temp = 0
+			temp.Mul(temp, new(big.Int).Exp(big.NewInt(10), big.NewInt(mns), nil))
+			digits = append(digits, new(big.Int).Set(temp))
+			temp.Set(big.NewInt(0))
 		}
 		if sns, ok := ArabicNumeralSymbols[v]; ok {
-			temp += sns
+			temp.Add(temp, big.NewInt(sns))
 		}
 	}
-	if temp != 0 {
+	if temp.Cmp(big.NewInt(0)) != 0 {
 		digits = append(digits, temp)
 	}
 	for _, v := range digits {
-		nv += v
+		nv.Add(nv, v)
 	}
 	return nv
 }
 
-func (k FourDigitKanji) vToNumberWithoutPowers() (nv int) {
+func (k FourDigitKanji) vToNumberWithoutPowers() *big.Int {
+	nv := big.NewInt(0)
 	for i, v := range k.V {
 		if i > 0 {
-			nv *= 10
+			nv.Mul(nv, big.NewInt(10))
 		}
 		if sns, ok := ArabicNumeralSymbols[v]; ok {
-			nv += sns
+			nv.Add(nv, big.NewInt(sns))
 		}
 	}
 	return nv

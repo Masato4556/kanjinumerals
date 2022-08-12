@@ -2,20 +2,21 @@ package kanjinumerals
 
 import (
 	"errors"
+	"math/big"
 	"strings"
 )
 
-func KanjiToInt(s string) (int, error) {
+func KanjiToInt(s string) (*big.Int, error) {
 	kanjiNumeralSymbols := splitNumeralSymbols(s)
 	if err := validateKanjis(kanjiNumeralSymbols); err != nil {
-		return 0, err
+		return big.NewInt(0), err
 	}
 	fourDigitKanjis := splitToFourDigitKanjis(kanjiNumeralSymbols)
 	fourDigitNumbers := fourDigitKanjis.ToFourDigitNumbers()
 	return fourDigitNumbers.ToInt(), nil
 }
 
-func IntToKanji(number int) (string, error) {
+func IntToKanji(number *big.Int) (string, error) {
 	fourDigitNumbers := splitToFourDigitNumbers(number)
 	fourDigitKanjis := fourDigitNumbers.ToFourDigitKanjis()
 	return fourDigitKanjis.ToString(), nil

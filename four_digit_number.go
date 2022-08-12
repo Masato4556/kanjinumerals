@@ -1,28 +1,35 @@
 package kanjinumerals
 
 import (
-	"math"
+	"log"
+	"math/big"
 )
 
 type FourDigitNumber struct {
-	V int // 4桁の数値
-	E int // 10の冪乗
+	V *big.Int // 4桁の数値
+	E *big.Int // 10の冪乗
 }
 type FourDigitNumbers []FourDigitNumber
 
 // splitToFourDigitNumbers 数値を4桁ごとに分ける
-func splitToFourDigitNumbers(arabicNumerals int) (fourDigitNumbers FourDigitNumbers) {
-	e := 0
-	for arabicNumerals > 0 {
+func splitToFourDigitNumbers(arabicNumerals *big.Int) (fourDigitNumbers FourDigitNumbers) {
+	e := big.NewInt(0)
+	var m *big.Int
+	for arabicNumerals.Cmp(big.NewInt(0)) > 0 {
+		arabicNumerals, m = arabicNumerals.DivMod(
+			arabicNumerals,
+			new(big.Int).Exp(big.NewInt(10), big.NewInt(4), nil),
+			new(big.Int),
+		)
 		fourDigitNumbers = append(
 			fourDigitNumbers,
 			FourDigitNumber{
-				V: arabicNumerals % 10000,
-				E: e,
+				V: new(big.Int).Set(m),
+				E: new(big.Int).Set(e),
 			},
 		)
-		arabicNumerals /= 10000
-		e += 4
+		log.Printf("%v", arabicNumerals)
+		e.Add(e, big.NewInt(4))
 	}
 	return
 }
@@ -33,7 +40,7 @@ func (n FourDigitNumber) ToFourDigitKanji() (fourDigitKanji FourDigitKanji) {
 
 func (n FourDigitNumber) kanjiE() string {
 	for k, v := range LargePowerNumeralSymbols {
-		if v == n.E {
+		if big.NewInt(v).Cmp(n.E) == 0 {
 			return k
 		}
 	}
@@ -44,11 +51,17 @@ func (n FourDigitNumber) kanjiE() string {
 // TODO: 一九〇四万みたいなフォーマットにも対応する
 // TODO: どのようなフォーマットに変換するか選択できるようにする
 func (n FourDigitNumber) kanjiV() (s []string) {
+	if n.V == nil {
+		return []string{}
+	}
+
 	v := n.V
+	var m *big.Int
+	ten := big.NewInt(10)
 	digits := []string{}
-	for v > 0 {
-		digits = append(digits, findArabicNumeralKanji(v%10))
-		v /= 10
+	for v.Cmp(big.NewInt(0)) > 0 {
+		v, m = new(big.Int).DivMod(v, ten, new(big.Int)) // TODO: DivModの使い方をちゃんと理解する
+		digits = append(digits, findArabicNumeralKanji(m.Int64()))
 	}
 	for i := len(digits) - 1; i >= 0; i-- {
 		if digits[i] == "〇" {
@@ -58,7 +71,7 @@ func (n FourDigitNumber) kanjiV() (s []string) {
 			s = append(s, digits[i])
 		}
 		if i != 0 {
-			s = append(s, findSmallPowerNumeralKanji(i))
+			s = append(s, findSmallPowerNumeralKanji(int64(i)))
 		}
 	}
 	return
@@ -70,11 +83,15 @@ func (ns FourDigitNumbers) ToFourDigitKanjis() (ks FourDigitKanjis) {
 	}
 	return
 }
+func (ns FourDigitNumbers) ToInt() *big.Int {
 
-func (ns FourDigitNumbers) ToInt() int {
-	number := 0
+	number := big.NewInt(0)
+	ten := big.NewInt(10)
+	var e big.Int
 	for _, n := range ns {
-		number += n.V * int(math.Pow10(n.E))
+		e.Exp(ten, n.E, nil)
+		number.Add(number, new(big.Int).Mul(n.V, &e))
+		log.Printf("%v", number)
 	}
 	return number
 }
