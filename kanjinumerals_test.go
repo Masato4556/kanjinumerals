@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var tenExp48 = new(big.Int).Exp(big.NewInt(10), big.NewInt(48), nil)
+
 func TestKanjiToInt(t *testing.T) {
 	type args struct {
 		s string
@@ -19,6 +21,7 @@ func TestKanjiToInt(t *testing.T) {
 		{name: "千二百三十四", args: args{s: "千二百三十四"}, want: big.NewInt(1234), wantErr: false},
 		{name: "十二兆三千四百二億三千四百五十万三千四百五十六", args: args{s: "十二兆三千四百二億三千四百五十万三千四百五十六"}, want: big.NewInt(12340234503456), wantErr: false},
 		{name: "五〇六〇七八九", args: args{s: "五〇六〇七八九"}, want: big.NewInt(5060789), wantErr: false},
+		{name: "一極", args: args{s: "一極"}, want: tenExp48, wantErr: false},
 		{name: "漢数字以外", args: args{s: "五〇漢字"}, want: big.NewInt(0), wantErr: true},
 	}
 	for _, tt := range tests {
@@ -47,6 +50,7 @@ func TestIntToKanji(t *testing.T) {
 	}{
 		{name: "1234", args: args{number: big.NewInt(1234)}, want: "千二百三十四", wantErr: false},
 		{name: "12340234503456", args: args{number: big.NewInt(12340234503456)}, want: "十二兆三千四百二億三千四百五十万三千四百五十六", wantErr: false},
+		{name: "1極", args: args{number: tenExp48}, want: "一極", wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

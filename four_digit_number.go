@@ -1,7 +1,6 @@
 package kanjinumerals
 
 import (
-	"log"
 	"math/big"
 )
 
@@ -21,14 +20,15 @@ func splitToFourDigitNumbers(arabicNumerals *big.Int) (fourDigitNumbers FourDigi
 			new(big.Int).Exp(big.NewInt(10), big.NewInt(4), nil),
 			new(big.Int),
 		)
-		fourDigitNumbers = append(
-			fourDigitNumbers,
-			FourDigitNumber{
-				V: new(big.Int).Set(m),
-				E: new(big.Int).Set(e),
-			},
-		)
-		log.Printf("%v", arabicNumerals)
+		if m.Cmp(big.NewInt(0)) != 0 {
+			fourDigitNumbers = append(
+				fourDigitNumbers,
+				FourDigitNumber{
+					V: new(big.Int).Set(m),
+					E: new(big.Int).Set(e),
+				},
+			)
+		}
 		e.Add(e, big.NewInt(4))
 	}
 	return
@@ -67,7 +67,7 @@ func (n FourDigitNumber) kanjiV() (s []string) {
 		if digits[i] == "〇" {
 			continue
 		}
-		if digits[i] != "一" {
+		if digits[i] != "一" || i == 0 { // TODO:　ロジックの最適化
 			s = append(s, digits[i])
 		}
 		if i != 0 {
@@ -91,7 +91,6 @@ func (ns FourDigitNumbers) ToInt() *big.Int {
 	for _, n := range ns {
 		e.Exp(ten, n.E, nil)
 		number.Add(number, new(big.Int).Mul(n.V, &e))
-		log.Printf("%v", number)
 	}
 	return number
 }
