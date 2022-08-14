@@ -12,15 +12,15 @@ type FourDigitNumbers []FourDigitNumber
 
 // splitToFourDigitNumbers 数値を4桁ごとに分ける
 func splitToFourDigitNumbers(arabicNumerals *big.Int) (fourDigitNumbers FourDigitNumbers) {
-	e := big.NewInt(0)
+	e := genBigInt0()
 	var m *big.Int
-	for arabicNumerals.Cmp(big.NewInt(0)) > 0 {
+	for cmpZero(arabicNumerals) > 0 {
 		arabicNumerals, m = arabicNumerals.DivMod(
 			arabicNumerals,
-			new(big.Int).Exp(big.NewInt(10), big.NewInt(4), nil),
+			new(big.Int).Exp(genBigInt10(), big.NewInt(4), nil),
 			new(big.Int),
 		)
-		if m.Cmp(big.NewInt(0)) != 0 {
+		if cmpZero(m) != 0 {
 			fourDigitNumbers = append(
 				fourDigitNumbers,
 				FourDigitNumber{
@@ -57,14 +57,14 @@ func (n FourDigitNumber) kanjiV() (s []string) {
 
 	v := n.V
 	var m *big.Int
-	ten := big.NewInt(10)
+	ten := genBigInt10()
 	digits := []string{}
-	for v.Cmp(big.NewInt(0)) > 0 {
+	for cmpZero(v) > 0 {
 		v, m = new(big.Int).DivMod(v, ten, new(big.Int)) // TODO: DivModの使い方をちゃんと理解する
 		digits = append(digits, findArabicNumeralKanji(m.Int64()))
 	}
 	for i := len(digits) - 1; i >= 0; i-- {
-		if digits[i] == "〇" {
+		if digits[i] == "〇" { // TODO:　ロジックの最適化
 			continue
 		}
 		if digits[i] != "一" || i == 0 { // TODO:　ロジックの最適化
@@ -85,8 +85,8 @@ func (ns FourDigitNumbers) ToFourDigitKanjis() (ks FourDigitKanjis) {
 }
 func (ns FourDigitNumbers) ToInt() *big.Int {
 
-	number := big.NewInt(0)
-	ten := big.NewInt(10)
+	number := genBigInt0()
+	ten := genBigInt10()
 	var e big.Int
 	for _, n := range ns {
 		e.Exp(ten, n.E, nil)

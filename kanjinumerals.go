@@ -9,7 +9,7 @@ import (
 func KanjiToInt(s string) (*big.Int, error) {
 	kanjiNumeralSymbols := splitNumeralSymbols(s)
 	if err := validateKanjis(kanjiNumeralSymbols); err != nil {
-		return big.NewInt(0), err
+		return genBigInt0(), err
 	}
 	fourDigitKanjis := splitToFourDigitKanjis(kanjiNumeralSymbols)
 	fourDigitNumbers := fourDigitKanjis.ToFourDigitNumbers()

@@ -43,7 +43,7 @@ func TestFourDigitNumbers_ToInt(t *testing.T) {
 				{V: big.NewInt(12), E: big.NewInt(12)},
 				{V: big.NewInt(102), E: big.NewInt(8)},
 				{V: big.NewInt(2957), E: big.NewInt(4)},
-				{V: big.NewInt(6050), E: big.NewInt(0)},
+				{V: big.NewInt(6050), E: genBigInt0()},
 			},
 			want: big.NewInt(12010229576050),
 		},
@@ -94,7 +94,7 @@ func TestFourDigitNumber_kanjiE(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		{name: "0", fields: fields{E: big.NewInt(0)}, want: ""},
+		{name: "0", fields: fields{E: genBigInt0()}, want: ""},
 		{name: "4", fields: fields{E: big.NewInt(4)}, want: "万"},
 		{name: "8", fields: fields{E: big.NewInt(8)}, want: "億"},
 		{name: "12", fields: fields{E: big.NewInt(12)}, want: "兆"},
@@ -148,12 +148,12 @@ func Test_splitToFourDigitNumbers(t *testing.T) {
 	}{
 		{name: "1234567890", args: args{arabicNumerals: big.NewInt(1234567890)},
 			wantFourDigitNumbers: FourDigitNumbers{
-				{V: big.NewInt(7890), E: big.NewInt(0)},
+				{V: big.NewInt(7890), E: genBigInt0()},
 				{V: big.NewInt(3456), E: big.NewInt(4)},
 				{V: big.NewInt(12), E: big.NewInt(8)},
 			},
 		},
-		{name: "1極", args: args{arabicNumerals: new(big.Int).Exp(big.NewInt(10), big.NewInt(48), nil)},
+		{name: "1極", args: args{arabicNumerals: new(big.Int).Exp(genBigInt10(), big.NewInt(48), nil)},
 			wantFourDigitNumbers: FourDigitNumbers{
 				{V: big.NewInt(1), E: big.NewInt(48)},
 			},

@@ -30,7 +30,7 @@ func splitToFourDigitKanjis(kanjiNumeralSymbols []string) (fourDigitKanjis FourD
 
 // FourDigitNumberに変換
 func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
-	n = FourDigitNumber{V: k.numberV(), E: big.NewInt(0)}
+	n = FourDigitNumber{V: k.numberV(), E: genBigInt0()}
 	if e, ok := LargePowerNumeralSymbols[k.E]; ok {
 		n.E = big.NewInt(e)
 	}
@@ -39,7 +39,7 @@ func (k FourDigitKanji) ToFourDigitNumber() (n FourDigitNumber) {
 
 // 万億兆などの漢数字が含まれるか
 func (k FourDigitKanji) IncludeSmallPowerNumeralSymbols() bool {
-	for symbol, _ := range SmallPowerNumeralSymbols {
+	for symbol := range SmallPowerNumeralSymbols {
 		if contains(k.V, symbol) {
 			return true
 		}
@@ -57,23 +57,23 @@ func (k FourDigitKanji) numberV() (nv *big.Int) {
 
 // TODO: リファクタ
 func (k FourDigitKanji) vToNumberWithPowers() *big.Int {
-	temp := big.NewInt(0)
+	temp := genBigInt0()
 	digits := []*big.Int{}
-	nv := big.NewInt(0)
+	nv := genBigInt0()
 	for _, v := range k.V {
 		if mns, ok := SmallPowerNumeralSymbols[v]; ok {
-			if temp.Cmp(big.NewInt(0)) == 0 {
+			if cmpZero(temp) == 0 {
 				temp.Set(big.NewInt(1))
 			}
-			temp.Mul(temp, new(big.Int).Exp(big.NewInt(10), big.NewInt(mns), nil))
+			temp.Mul(temp, new(big.Int).Exp(genBigInt10(), big.NewInt(mns), nil))
 			digits = append(digits, new(big.Int).Set(temp))
-			temp.Set(big.NewInt(0))
+			temp.Set(genBigInt0())
 		}
 		if sns, ok := ArabicNumeralSymbols[v]; ok {
 			temp.Add(temp, big.NewInt(sns))
 		}
 	}
-	if temp.Cmp(big.NewInt(0)) != 0 {
+	if cmpZero(temp) != 0 {
 		digits = append(digits, temp)
 	}
 	for _, v := range digits {
@@ -83,10 +83,10 @@ func (k FourDigitKanji) vToNumberWithPowers() *big.Int {
 }
 
 func (k FourDigitKanji) vToNumberWithoutPowers() *big.Int {
-	nv := big.NewInt(0)
+	nv := genBigInt0()
 	for i, v := range k.V {
 		if i > 0 {
-			nv.Mul(nv, big.NewInt(10))
+			nv.Mul(nv, genBigInt10())
 		}
 		if sns, ok := ArabicNumeralSymbols[v]; ok {
 			nv.Add(nv, big.NewInt(sns))

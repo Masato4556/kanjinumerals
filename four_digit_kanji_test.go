@@ -17,7 +17,7 @@ func TestFourDigitKanji_vToNumberWithPowers(t *testing.T) {
 		wantNv *big.Int
 	}{
 		{name: "一", fields: fields{V: []string{"一"}}, wantNv: big.NewInt(1)},
-		{name: "十", fields: fields{V: []string{"十"}}, wantNv: big.NewInt(10)},
+		{name: "十", fields: fields{V: []string{"十"}}, wantNv: genBigInt10()},
 		{name: "二百五", fields: fields{V: []string{"二", "百", "五"}}, wantNv: big.NewInt(205)},
 		{name: "三千六百十五", fields: fields{V: []string{"三", "千", "六", "百", "十", "五"}}, wantNv: big.NewInt(3615)},
 	}
@@ -182,7 +182,7 @@ func TestFourDigitKanji_ToFourDigitNumber(t *testing.T) {
 		{
 			name:   "二千九百五十七万",
 			fields: fields{V: []string{"六", "千", "五", "十"}, E: ""},
-			wantN:  FourDigitNumber{V: big.NewInt(6050), E: big.NewInt(0)},
+			wantN:  FourDigitNumber{V: big.NewInt(6050), E: genBigInt0()},
 		},
 	}
 	for _, tt := range tests {
@@ -216,7 +216,7 @@ func TestFourDigitKanjis_ToFourDigitNumbers(t *testing.T) {
 				{V: big.NewInt(12), E: big.NewInt(12)},
 				{V: big.NewInt(102), E: big.NewInt(8)},
 				{V: big.NewInt(2957), E: big.NewInt(4)},
-				{V: big.NewInt(6050), E: big.NewInt(0)},
+				{V: big.NewInt(6050), E: genBigInt0()},
 			},
 		},
 	}
